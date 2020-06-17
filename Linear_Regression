@@ -1,0 +1,41 @@
+# 9. Write code to find the minimum SSE using gradient descent for the cars data set where intercept and slope are both 
+# unknown (following the pseudo code). Use an initial guess for beta_0 of -20 and beta_1 of 1, an alpha (movement size) of 
+# 0.00002, and a tolerance of 0.000001.
+
+from math import sqrt
+
+cars_df = pd.read_csv('./cars.csv')
+X = list(cars_df.loc[:,'speed'])
+Y = list(cars_df.loc[:,'dist'])
+
+def db1(x_i,y_i,beta0,beta1):
+    sum_ = 0
+    for i in range(0,len(X)):
+        sq_err = (Y[i] - beta0 - beta1*X[i])*(-2*X[i])
+        sum_ += sq_err
+    return sum_
+
+def db0(x_i,y_i,beta0,beta1):
+    sum_ = 0
+    for i in range(0,len(X)):
+        sq_err = (-2)*(Y[i] - beta0 - beta1*X[i])
+        sum_ += sq_err
+    return sum_
+    
+def multivar_minimum_SSE(b0,b1,X,Y,alpha,tol):
+    b1_curr,b0_curr = b1,b0
+    b1_prev,b0_prev = 0,0
+    while ( sqrt( (b1_curr-b1_prev)**2 + (b0_curr-b0_prev)**2 ) > tol ):
+        b1_prev = b1_curr
+        b0_prev = b0_curr
+        b1_curr = b1_prev - alpha*db1(X,Y,b0_prev,b1_prev)
+        b0_curr = b0_prev - alpha*db0(X,Y,b0_prev,b1_prev)
+    return b0_curr,b1_curr,SSE(X,Y,b0_curr,b1_curr)
+    
+    
+b0 = -20
+b1 = 1
+alpha = 0.00002
+tol = 0.000001
+
+%time multivar_minimum_SSE(b0,b1,X,Y,alpha,tol)
