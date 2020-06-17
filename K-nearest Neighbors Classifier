@@ -1,0 +1,51 @@
+import numpy as np
+import pandas as pd
+
+from math import sqrt
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Loading scikit-learn breast cancer data set
+data = load_breast_cancer()
+df = pd.DataFrame(data.data, columns=data.feature_names)
+t_target = pd.Series(data.target)
+
+# Splitting the data into training and test data
+X_train, X_test, y_train, y_test = train_test_split(df, t_target, test_size=0.3, stratify=t_target)
+    
+# Using Knearest function to determine the class of each point in the test data set    
+y_pred = Knearest(X_train, X_test, y_train, 5)
+
+# Accuracy of the model
+accuracy_score(y_test,y_pred)
+
+
+#### Functions Below ####
+
+# Determines the distance between one test point and all training points
+def euclidean(X_train,X_test,y_train):
+    differences = []
+    for i in range(len(X_train)):
+        differences.append(X_train[i]-X_test)
+    d2_list = []
+    j=0
+    for dif in differences:
+        d2_list.append((sqrt(sum([x**2 for x in dif])),y_train[j]))
+        j+=1
+    return d2_list
+
+# K-nearest neighbors classifier
+def Knearest(X_train, X_test, y_train, k): # k = number of neighboring points used to determine the classification
+    x_train = np.array(X_train)
+    x_test = np.array(X_test)
+    y_train = np.array(y_train)
+    
+    distances = []
+    y_pred = []
+    for i in range(len(x_test)):
+        distances = sorted(euclidean(x_train,x_test[i],y_train))[:k]
+        classes = [distances[x][1] for x in range(len(distances))]
+        y_pred.append(max(classes, key=classes.count))
+        distances = []
+    return y_pred
