@@ -1,8 +1,9 @@
-# 9. Write code to find the minimum SSE using gradient descent for the cars data set where intercept and slope are both 
+# Write code to find the minimum SSE using gradient descent for the cars data set where intercept and slope are both 
 # unknown (following the pseudo code). Use an initial guess for beta_0 of -20 and beta_1 of 1, an alpha (movement size) of 
 # 0.00002, and a tolerance of 0.000001.
 
 from math import sqrt
+import pandas as pd
 
 cars_df = pd.read_csv('./cars.csv')
 X = list(cars_df.loc[:,'speed'])
